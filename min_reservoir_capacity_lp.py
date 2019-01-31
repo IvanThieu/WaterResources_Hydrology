@@ -200,7 +200,7 @@ def max_release(release_data, inflow_data, month_index, yr_index):
 # Function to generate the constraints.
 # Using data that get defined later
 def generate_constraints(number_years):
-    capacity_constraints = []
+    capacity_constraints = [b >= 0]
     for yr in range(0, number_years):
         capacity_constraints += [capacity - b >= flood_reservoir(data_month_constraints["V(t+1)"], data_inflow, yr),
                                 b >= min_storage(data_month_constraints["Smin (t+1)"], data_inflow, yr)] + \
@@ -245,7 +245,7 @@ constraints_capacity = generate_constraints(num_years)
 prob = cp.Problem(obj, constraints=constraints_capacity)
 
 # Solve
-prob.solve()
+prob.solve(solver=cp.ECOS)
 
 # Print out the solutions
 print("\nMin Capacity:\n%.2f" %capacity.value)
